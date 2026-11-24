@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SakuPintar - Pengatur Keuangan Siswa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 SakuPintar</h1>
+            <p>Kelola uang sakumu dengan bijak setiap hari</p>
+        </header>
+
+        <!-- Ringkasan Saldo -->
+        <section class="summary-card">
+            <h2>Sisa Saldo: <span id="saldo">Rp 0</span></h2>
+            <p id="status-keuangan" class="status aman">Status: Keuangan Aman</p>
+            <div class="summary-detail">
+                <div class="masuk">Pemasukan: <span id="total-masuk">Rp 0</span></div>
+                <div class="keluar">Pengeluaran: <span id="total-keluar">Rp 0</span></div>
+            </div>
+        </section>
+
+        <!-- Form Input Transaksi -->
+        <section class="form-section">
+            <h3>Tambah Catatan Baru</h3>
+            <form id="form-transaksi">
+                <input type="text" id="keterangan" placeholder="Keterangan (misal: Uang saku, Beli bakso)" required>
+                <input type="number" id="jumlah" placeholder="Nominal (Rp)" min="100" required>
+                
+                <div class="form-row">
+                    <select id="jenis">
+                        <option value="masuk">Pemasukan (+)</option>
+                        <option value="keluar">Pengeluaran (-)</option>
+                    </select>
+
+                    <select id="kategori">
+                        <option value="Uang Saku">Uang Saku</option>
+                        <option value="Makan & Minum">Makan & Minum</option>
+                        <option value="Transportasi">Transportasi</option>
+                        <option value="Alat Tulis / Tugas">Alat Tulis / Tugas</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+
+                <button type="submit">Simpan Catatan</button>
+            </form>
+        </section>
+
+        <!-- Riwayat Transaksi -->
+        <section class="history-section">
+            <div class="history-header">
+                <h3>Riwayat Transaksi</h3>
+                <button id="btn-reset" class="btn-danger-outline">Reset Semua</button>
+            </div>
+            <ul id="daftar-transaksi"></ul>
+        </section>
+
+        <footer>
+            <p>Dibuat oleh: [Nama Siswa 1 & Nama Siswa 2] - [Nama Sekolah]</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
