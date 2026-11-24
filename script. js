@@ -1,0 +1,93 @@
+const form = document.getElementById('form-transaksi');
+const daftarEl = document.getElementById('daftar-transaksi');
+const saldoEl = document.getElementById('saldo');
+const totalMasukEl = document.getElementById('total-masuk');
+const totalKeluarEl = document.getElementById('total-keluar');
+const statusEl = document.getElementById('status-keuangan');
+const btnReset = document.getElementById('btn-reset');
+
+// Mengambil data dari localStorage jika ada, jika tidak buat array kosong
+let transaksiList = JSON.parse(localStorage.getItem('dataSakuPintar')) || [];
+
+function simpanKeStorage() {
+    localStorage.setItem('dataSakuPintar', JSON.stringify(transaksiList));
+}
+
+function formatRupiah(angka) {
+    return 'Rp ' + angka.toLocaleString('id-ID');
+}
+
+function updateTampilan() {
+    daftarEl.innerHTML = '';
+    let totalMasuk = 0;
+    let totalKeluar = 0;
+
+    transaksiList.forEach((item, index) => {
+        if (item.jenis === 'masuk') {
+            totalMasuk += item.jumlah;
+        } else {
+            totalKeluar += item.jumlah;
+        }
+
+        const li = document.createElement('li');
+        li.className = item.jenis === 'masuk' ? 'item-masuk' : 'item-keluar';
+        li.innerHTML = `
+            <div class="info-transaksi">
+                <strong>${item.keterangan}</strong>
+                <span class="badge-kategori">${item.kategori}</span>
+            </div>
+            <div class="aksi-kanan">
+                <span>${item.jenis === 'masuk' ? '+' : '-'} ${formatRupiah(item.jumlah)}</span>
+                <button class="btn-hapus" onclick="hapusTransaksi(${index})">X</button>
+            </div>
+        `;
+        daftarEl.appendChild(li);
+    });
+
+    const saldo = totalMasuk - totalKeluar;
+    saldoEl.textContent = formatRupiah(saldo);
+    totalMasukEl.textContent = formatRupiah(totalMasuk);
+    totalKeluarEl.textContent = formatRupiah(totalKeluar);
+
+    // Logika indikator status keuangan
+    if (saldo < 0) {
+        statusEl.textContent = 'Status: Defisit! Pengeluaran melebihi pemasukan';
+        statusEl.className = 'status boros';
+    } else if (totalKeluar > totalMasuk * 0.8 && totalMasuk > 0) {
+        statusEl.textContent = 'Status: Waspada Boros! (>80% terpakai)';
+        statusEl.className = 'status boros';
+    } else {
+        statusEl.textContent = 'Status: Keuangan Aman';
+        statusEl.className = 'status aman';
+    }
+}
+
+function hapusTransaksi(index) {
+    transaksiList.splice(index, 1);
+    simpanKeStorage();
+    updateTampilan();
+}
+
+btnReset.addEventListener('click', function() {
+    if (confirm('Yakin ingin menghapus semua catatan transaksi?')) {
+        transaksiList = [];
+        simpanKeStorage();
+        updateTampilan();
+    }
+});
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const keterangan = document.getElementById('keterangan').value;
+    const jumlah = parseInt(document.getElementById('jumlah').value);
+    const jenis = document.getElementById('jenis').value;
+    const kategori = document.getElementById('kategori').value;
+
+    transaksiList.push({ keterangan, jumlah, jenis, kategori });
+    simpanKeStorage();
+    updateTampilan();
+    form.reset();
+});
+
+// Jalankan saat halaman pertama kali dibuka
+updateTampilan();
